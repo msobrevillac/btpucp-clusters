@@ -22,10 +22,22 @@ def save_sparse_csr(filename,array):
     np.savez(filename,data = array.data ,indices=array.indices,
              indptr =array.indptr, shape=array.shape )
 
-def load_sparse_csr(filename):
+def load_sparse_csr(filename="corpus_tfidf.npz"):
     loader = np.load(filename)
     return csr_matrix((  loader['data'], loader['indices'], loader['indptr']),
                          shape = loader['shape'])
+
+
+def save_labels(filename,array):
+    #np.savetxt(filename+".txt",array,fmt="%s")
+    f = open(filename+".txt","w")
+    #f.write("\n".join(array)
+    for w in array:
+        f.write(w.encode('utf-8')+"\n")
+    f.close()
+
+def load_labels(filename="corpus_label.txt"):
+    return np.loadtxt(filename, dtype=str,delimiter="\n")
 
 
 def preprocessing(job_post):
@@ -64,15 +76,19 @@ def main(csvfile = "TA_Registros_etiquetados.csv"):
     with open(csvfile, 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
-            w, s = preprocessing(" ".join(row[4:]))
+            w, s = preprocessing(" ".join(row[3:]))
             corpus.append(s)
 
     X, y = tfidf_vect(corpus)
-    print len(y), y[1000], X[0,1000]
-    print type(X), X.shape
+    #print len(y), y[1000], X[0,1000]
+    #print type(X), X.shape
+    #print type(y), np.array(y).shape
     save_sparse_csr("corpus_tfidf",X)
-    X = load_sparse_csr("corpus_tfidf.npz")
-    print type(X), X.shape, X[0,1000]
+    save_labels("corpus_label",np.array(y))
+    #X = load_sparse_csr("corpus_tfidf.npz")
+    #y = load_labels()
+    #print type(X), X.shape, X[0,1000]
+    #print type(y), len(y), y[1000]
 
 
 main()
