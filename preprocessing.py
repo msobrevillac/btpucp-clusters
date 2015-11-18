@@ -99,9 +99,5 @@ def main(csvfile = "TA_Registros_etiquetados.csv"):
     save_id_labels("corpus_id_label",np.array(id_jobs),np.array(labels))
     #X = load_sparse_csr("corpus_tfidf.npz")
     z = load_id_labels()
-    print z.shape, z[0]
     #print type(X), X.shape, X[0,1000]
     #print type(y), len(y), y[1000]
-
-
-main()
