@@ -3,14 +3,12 @@ __author__ = 'Arturo'
 
 import csv
 import numpy as np
-import sklearn
 import string
 import re
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse.csr import csr_matrix
-
 
 #global
 regex_punctuation = re.compile('[%s]' % re.escape(string.punctuation))
