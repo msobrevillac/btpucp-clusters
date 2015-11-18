@@ -26,7 +26,16 @@ def load_sparse_csr(filename="corpus_tfidf.npz"):
                          shape = loader['shape'])
 
 
-def save_labels(filename,array):
+def save_id_labels(filename,arrayId,arrayLabel):
+    f = open(filename+".txt","w")
+    for idx,id_job in enumerate(arrayId):
+        f.write(str(id_job)+","+str(arrayLabel[idx])+"\n")
+
+def load_id_labels(filename="corpus_id_label.txt"):
+    return np.loadtxt(filename, dtype=int, delimiter=",")
+
+
+def save_dict(filename,array):
     #np.savetxt(filename+".txt",array,fmt="%s")
     f = open(filename+".txt","w")
     #f.write("\n".join(array)
@@ -34,7 +43,7 @@ def save_labels(filename,array):
         f.write(w.encode('utf-8')+"\n")
     f.close()
 
-def load_labels(filename="corpus_label.txt"):
+def load_dict(filename="corpus_dict.txt"):
     return np.loadtxt(filename, dtype=str,delimiter="\n")
 
 
@@ -71,9 +80,13 @@ def tfidf_vect(corpus):
 
 def main(csvfile = "TA_Registros_etiquetados.csv"):
     corpus = []
+    labels = []
+    id_jobs = []
     with open(csvfile, 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
+            id_jobs.append(int(row[0]))
+            labels.append(int(row[1]))
             w, s = preprocessing(" ".join(row[3:]))
             corpus.append(s)
 
@@ -82,9 +95,11 @@ def main(csvfile = "TA_Registros_etiquetados.csv"):
     #print type(X), X.shape
     #print type(y), np.array(y).shape
     save_sparse_csr("corpus_tfidf",X)
-    save_labels("corpus_label",np.array(y))
+    save_dict("corpus_dict",np.array(y))
+    save_id_labels("corpus_id_label",np.array(id_jobs),np.array(labels))
     #X = load_sparse_csr("corpus_tfidf.npz")
-    #y = load_labels()
+    z = load_id_labels()
+    print z.shape, z[0]
     #print type(X), X.shape, X[0,1000]
     #print type(y), len(y), y[1000]
 
